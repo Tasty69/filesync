@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 from os import path
 from dirsync import sync
@@ -5,37 +6,41 @@ import logging
 from datetime import datetime
 import argparse     
 
-now = datetime.now()
-timestamp = now.strftime("%d%m%Y_%H%M%S")
-ScriptName = 'filesync'
-ScriptLogDir = f'C:/ScriptLogs/{ScriptName}/'
-LogFile = f'{ScriptLogDir}{ScriptName}_{timestamp}.log'
+def init_logfile():
+    now = datetime.now()
+    timestamp = now.strftime("%d%m%Y_%H%M%S")
+    ScriptName = 'filesync'
+    ScriptLogDir = f'/Users/sam/ScriptLogs/{ScriptName}/'
+    _LogFile = f'{ScriptLogDir}{ScriptName}_{timestamp}.log'
 
-if path.exists(ScriptLogDir) != True:
-    os.makedirs(ScriptLogDir)
+    if path.exists(ScriptLogDir) != True:
+        os.makedirs(ScriptLogDir)
 
-if path.exists(LogFile) != True:
-    open(LogFile, 'w')
+    if path.exists(_LogFile) != True:
+        open(_LogFile, 'w')
 
-logging.basicConfig(
-    filename=LogFile,
-    encoding='utf-8',
-    level=logging.DEBUG
-)   
+    return _LogFile    
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Sync source and destination directories")
-    parser.add_argument("-v","--verbose", action='store_true', help="Increase logging verbosity")
-    parser.add_argument("-p","--purge", action="store_true", help="Purge items in destination not in source")
-    parser.add_argument("-c","--create", action="store_true", help="Creates destination directory")
-    parser.add_argument("-s","--source", default="D:/TestSource", help="Define source directory")
-    parser.add_argument("-d","--destination", default="D:/MusicSync", help="Define destination directory")
-    parser.add_argument("-a","--action", default="sync", choices=["sync","diff","update"], help="Choose from actions: sync, diff, or update")
+    parser.add_argument("-v","--verbose", action="store_true")
+    parser.add_argument("-p","--purge", action="store_true")
+    parser.add_argument("-c","--create", action="store_true")
+    parser.add_argument("-s","--source", default="/Users/sam/source_test")
+    parser.add_argument("-d","--destination", default="/Users/sam/destination_test")
+    parser.add_argument("-a","--action", default="sync", choices=["sync","diff","update"])
 
     return parser.parse_args()
 
 def main():
     args = parse_args()
+    LogFile = init_logfile()
+
+    logging.basicConfig(
+    filename=LogFile,
+    encoding='utf-8',
+    level=logging.DEBUG
+    )   
 
     if args.create != True and path.exists(args.destination) != True:
         print(f'[ERROR] Destination "{args.destination}" does not exist and create "-c" option not selected')
