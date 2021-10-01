@@ -4,7 +4,6 @@ import subprocess
 from os import path
 from datetime import datetime
 import argparse
-import dnf
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Set fan speed on Dell PowerEdge via IPMI")
@@ -31,7 +30,6 @@ def main():
         hex_speed = "0x02 0xff 0x05"
     elif args.speed == "high":
         hex_speed = "0x02 0xff 0x10"
-
 
     # Set Fan Control to Manual
     os.system(f'/bin/ipmitool -H {IPAddress} -U {args.username} -P {args.password} raw 0x30 0x30 0x01 0x00')

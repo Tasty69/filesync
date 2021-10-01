@@ -6,21 +6,6 @@ import logging
 from datetime import datetime
 import argparse     
 
-def init_logfile():
-    now = datetime.now()
-    timestamp = now.strftime("%d%m%Y_%H%M%S")
-    ScriptName = 'filesync'
-    ScriptLogDir = f'/Users/sam/ScriptLogs/{ScriptName}/'
-    _LogFile = f'{ScriptLogDir}{ScriptName}_{timestamp}.log'
-
-    if path.exists(ScriptLogDir) != True:
-        os.makedirs(ScriptLogDir)
-
-    if path.exists(_LogFile) != True:
-        open(_LogFile, 'w')
-
-    return _LogFile    
-
 def parse_args():
     parser = argparse.ArgumentParser(description="Sync source and destination directories")
     parser.add_argument("-v","--verbose", action="store_true")
@@ -32,15 +17,28 @@ def parse_args():
 
     return parser.parse_args()
 
-def main():
-    args = parse_args()
-    LogFile = init_logfile()
+def init_logfile(ScriptName):
+    now = datetime.now()
+    timestamp = now.strftime("%d%m%Y_%H%M%S")
+    #ScriptName = 'filesync'
+    ScriptLogDir = f'/Users/sam/ScriptLogs/{ScriptName}/'
+    _LogFile = f'{ScriptLogDir}{ScriptName}_{timestamp}.log'
+
+    if path.exists(ScriptLogDir) != True:
+        os.makedirs(ScriptLogDir)
+
+    if path.exists(_LogFile) != True:
+        open(_LogFile, 'w')
 
     logging.basicConfig(
-    filename=LogFile,
-    encoding='utf-8',
-    level=logging.DEBUG
-    )   
+        filename=_LogFile,
+        encoding='utf-8',
+        level=logging.DEBUG
+    )       
+
+def main(args):
+    
+    init_logfile('filesync')
 
     if args.create != True and path.exists(args.destination) != True:
         print(f'[ERROR] Destination "{args.destination}" does not exist and create "-c" option not selected')
@@ -62,7 +60,8 @@ def main():
         )
         
 if __name__ == "__main__":
-    main()  
+    args = parse_args()
+    main(args)  
 
 
 
