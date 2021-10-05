@@ -54,7 +54,7 @@ def init_logging(script_name) -> None:
     )
 
 
-def main(args) -> None:
+def main(args) -> int:
 
     init_logging('filesync')
 
@@ -80,11 +80,12 @@ def main(args) -> None:
         except Exception as error:
             print(f'Dirsync failed. {error}')
             sys.exit(1)    
-       
-        
+
+
 if __name__ == "__main__":
     args = parse_args()
     main(args)  
+    sys.exit(main(args))
 
 
 
