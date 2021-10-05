@@ -11,7 +11,7 @@ import os
 import sys
 import typing   
 
-def parse_args():
+def parse_args() -> typing.Any:
     parser = argparse.ArgumentParser(description="Sync source and destination directories")
     parser.add_argument("-v","--verbose", action="store_true")
     parser.add_argument("-p","--purge", action="store_true")
@@ -23,11 +23,11 @@ def parse_args():
     return parser.parse_args()
 
 
-def init_logging(script_name) -> typing.NoReturn:
+def init_logging(script_name) -> None:
     now = datetime.datetime.now()
     time_stamp = now.strftime("%d%m%Y_%H%M%S")
-    script_log_dir = f'/scriptlogs/{script_name}/'
-    log_file = f'{script_log_dir}{script_name}_{time_stamp}.log'
+    script_log_dir = f'/scriptlogs/{script_name}'
+    log_file = f'{script_log_dir}/{script_name}_{time_stamp}.log'
 
     if not os.path.exists(script_log_dir):
         try:
@@ -53,9 +53,9 @@ def init_logging(script_name) -> typing.NoReturn:
     )
 
 
-def main(args):
-    
-    init_logging(script_name='filesync')
+def main(args) -> None:
+
+    init_logging('filesync')
 
     if args.create != True and os.path.exists(args.destination) != True:
         print(f'[ERROR] Destination "{args.destination}" does not exist and create "-c" option not selected')
