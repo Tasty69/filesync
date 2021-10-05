@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-import os
-from os import path
-from dirsync import sync
+"""
+This script syncs two directories
+"""
+
+import argparse  
+import datetime
+import dirsync
 import logging
-from datetime import datetime
-import argparse     
+import os
+import sys
+import typing   
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Sync source and destination directories")
@@ -17,47 +22,63 @@ def parse_args():
 
     return parser.parse_args()
 
-def init_logfile(ScriptName):
-    now = datetime.now()
-    timestamp = now.strftime("%d%m%Y_%H%M%S")
-    #ScriptName = 'filesync'
-    ScriptLogDir = f'/Users/sam/ScriptLogs/{ScriptName}/'
-    _LogFile = f'{ScriptLogDir}{ScriptName}_{timestamp}.log'
 
-    if path.exists(ScriptLogDir) != True:
-        os.makedirs(ScriptLogDir)
+def init_logging(script_name) -> typing.NoReturn:
+    now = datetime.datetime.now()
+    time_stamp = now.strftime("%d%m%Y_%H%M%S")
+    script_log_dir = f'/scriptlogs/{script_name}/'
+    log_file = f'{script_log_dir}{script_name}_{time_stamp}.log'
 
-    if path.exists(_LogFile) != True:
-        open(_LogFile, 'w')
-
+    if not os.path.exists(script_log_dir):
+        try:
+            os.makedirs(script_log_dir)
+            print(f'[INFO] Created {script_log_dir}')
+        except Exception as error:
+            print(f'[ERROR] Failed to create {script_log_dir}. {error}')
+            sys.exit(1)
+    if not os.path.exists(log_file):
+        try:
+            with open(log_file, 'w') as f:
+                f.write('')
+                f.close()
+            print(f'[INFO] Created {log_file}')
+        except Exception as error:
+            print(f'[ERROR] Failed to create {log_file}. {error}') 
+            sys.exit(1)
+ 
     logging.basicConfig(
-        filename=_LogFile,
-        encoding='utf-8',
-        level=logging.DEBUG
-    )       
+    filename=log_file,
+    encoding='utf-8',
+    level=logging.DEBUG
+    )
+
 
 def main(args):
     
-    init_logfile('filesync')
+    init_logging(script_name='filesync')
 
-    if args.create != True and path.exists(args.destination) != True:
+    if args.create != True and os.path.exists(args.destination) != True:
         print(f'[ERROR] Destination "{args.destination}" does not exist and create "-c" option not selected')
         logging.error(f'Destination "{args.destination}" does not exist and create "-c" option not selected')
-        exit(0)
-    elif path.exists(args.source) != True:
+        sys.exit(1)
+    elif os.path.exists(args.source) != True:
         print(f'[ERROR] Source "{args.source}" - Does not exist!')
         logging.error(f'Source "{args.source}" - Does not exist!') 
-        exit(0)
+        sys.exit(1)
     else:
-        sync(
-            args.source,
-            args.destination,
-            args.action,
-            verbose=args.verbose,
-            purge=args.purge,
-            create=args.create,
-            logger=logging
-        )
+        try:
+            dirsync.sync(
+                args.source,
+                args.destination,
+                args.action,
+                verbose=args.verbose,
+                purge=args.purge,
+                create=args.create,
+                logger=logging
+            )
+        except Exception as error:
+            print(f'Dirsync failed. {error}')
+            sys.exit(1)    
         
 if __name__ == "__main__":
     args = parse_args()
