@@ -11,6 +11,7 @@ import os
 import sys
 import typing   
 
+
 def parse_args() -> typing.Any:
     parser = argparse.ArgumentParser(description="Sync source and destination directories")
     parser.add_argument("-v","--verbose", action="store_true")
@@ -79,6 +80,7 @@ def main(args) -> None:
         except Exception as error:
             print(f'Dirsync failed. {error}')
             sys.exit(1)    
+       
         
 if __name__ == "__main__":
     args = parse_args()
