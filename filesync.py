@@ -58,11 +58,11 @@ def main(args) -> int:
 
     init_logging('filesync')
 
-    if args.create != True and os.path.exists(args.destination) != True:
+    if not args.create and not os.path.exists(args.destination):
         print(f'[ERROR] Destination "{args.destination}" does not exist and create "-c" option not selected')
         logging.error(f'Destination "{args.destination}" does not exist and create "-c" option not selected')
         sys.exit(1)
-    elif os.path.exists(args.source) != True:
+    elif not os.path.exists(args.source):
         print(f'[ERROR] Source "{args.source}" - Does not exist!')
         logging.error(f'Source "{args.source}" - Does not exist!') 
         sys.exit(1)
