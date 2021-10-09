@@ -14,12 +14,12 @@ import typing
 
 def parse_args() -> typing.Any:
     parser = argparse.ArgumentParser(description="Sync source and destination directories")
-    parser.add_argument("-v","--verbose", action="store_true")
-    parser.add_argument("-p","--purge", action="store_true")
-    parser.add_argument("-c","--create", action="store_true")
-    parser.add_argument("-s","--source", default="/Users/sam/source_test")
-    parser.add_argument("-d","--destination", default="/Users/sam/destination_test")
-    parser.add_argument("-a","--action", default="sync", choices=["sync","diff","update"])
+    parser.add_argument("-v", "--verbose", action="store_true")
+    parser.add_argument("-p", "--purge", action="store_true")
+    parser.add_argument("-c", "--create", action="store_true")
+    parser.add_argument("-s", "--source", default="/Users/sam/source_test")
+    parser.add_argument("-d", "--destination", default="/Users/sam/destination_test")
+    parser.add_argument("-a", "--action", default="sync", choices=["sync", "diff", "update"])
 
     return parser.parse_args()
 
